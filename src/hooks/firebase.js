@@ -11,23 +11,20 @@ export const useFireColl = ref => {
       .pipe(map(docs => docs.map(doc => doc.data())))
       .subscribe(tasks => setItems(tasks));
     return () => tasks$.unsubscribe();
-  }, []);
+  }, [ref]);
 
   return items;
 };
 
 export const useFireDoc = ref => {
-    const [items, setItems] = useState({});
-  
-    useEffect(() => {
-      const tasks$ = doc(firestore.doc(ref))
-        .pipe(map(doc => doc.data()))
-        .subscribe(tasks => setItems(tasks));
-      return () => tasks$.unsubscribe();
-    }, []);
-  
-    return items;
-  };
+  const [items, setItems] = useState({});
 
+  useEffect(() => {
+    const tasks$ = doc(firestore.doc(ref))
+      .pipe(map(doc => doc.data()))
+      .subscribe(tasks => setItems(tasks));
+    return () => tasks$.unsubscribe();
+  }, [ref]);
 
-
+  return items;
+};

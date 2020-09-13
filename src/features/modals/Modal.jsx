@@ -11,12 +11,15 @@ if (!modalRoot) {
 
 class Modal extends React.Component {
   el = document.createElement('div');
+
   componentDidMount() {
     modalRoot.appendChild(this.el);
   }
+
   componentWillUnmount() {
     modalRoot.removeChild(this.el);
   }
+
   render() {
     return ReactDOM.createPortal(
       <div
@@ -25,10 +28,10 @@ class Modal extends React.Component {
         "
       >
         <div
-          className="center mw9 ma3 ma5-ns br2 pa3 shadow-1"
-          style={{
-            background: '#f4f2e8'
-          }}
+          className="center mw9 ma3 ma6-ns mt7-ns br2 pa3 shadow-1 bg-white"
+          // style={{
+          //   background: '#f4f2e8'
+          // }}
         >
           <div className="w-100 tr">
             <button className="pointer" onClick={this.props.onClose}>

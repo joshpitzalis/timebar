@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header } from "../../components/ModuleHeader";
+import { Header } from '../../components/ModuleHeader';
 import { TasksContext } from '../../context/TasksContext';
 import Modal from '../modals/Modal';
 import { ListCreator } from './ListCreator';
@@ -27,18 +27,19 @@ const taskReducer = (state, action) => {
 };
 
 const initialState = {
-  modalVisible: false
+  modalVisible: false,
 };
-
-
 
 const Tasks = () => {
   const [state, dispatch] = React.useReducer(taskReducer, initialState);
   const { lists } = React.useContext(TasksContext);
   return (
-    <div className="mw9 center pa3 pa5-ns ">
-      <Header dispatch={dispatch} type='OPENED_TASK_LIST_CREATOR'
-      sectionTitle="Tasks"/>
+    <div className="mw9 center pa3 pa5-ns min-vh-100">
+      <Header
+        dispatch={dispatch}
+        type="OPENED_TASK_LIST_CREATOR"
+        sectionTitle="Tasks"
+      />
       <section className="flex">
         <ToDoLists lists={lists} dispatch={dispatch} />
         <Dialogue
@@ -54,22 +55,19 @@ const Tasks = () => {
 
 export default Tasks;
 
-const Dialogue = ({ modalVisible, id, dispatch, listId }) => {
-  return (
-    modalVisible && (
-      <Modal
-        onClose={() =>
-          id
-            ? dispatch({ type: 'EDITOR_MODAL_CLOSED' })
-            : dispatch({ type: 'MODAL_CLOSED' })
-        }
-      >
-        {id ? (
-          <ListEditor dispatch={dispatch} listId={listId} />
-        ) : (
-          <ListCreator dispatch={dispatch} />
-        )}
-      </Modal>
-    )
+const Dialogue = ({ modalVisible, id, dispatch, listId }) =>
+  modalVisible && (
+    <Modal
+      onClose={() =>
+        id
+          ? dispatch({ type: 'EDITOR_MODAL_CLOSED' })
+          : dispatch({ type: 'MODAL_CLOSED' })
+      }
+    >
+      {id ? (
+        <ListEditor dispatch={dispatch} listId={listId} />
+      ) : (
+        <ListCreator dispatch={dispatch} />
+      )}
+    </Modal>
   );
-};

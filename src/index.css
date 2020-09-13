@@ -26,20 +26,36 @@ body {
   color: #0b0c0c;
 }
 
+.dark-red {
+  color: #b81416;
+}
+
 .red {
-  color: #e37c7c;
+  color: #e92f29;
 }
 
 .orange {
-  color: #f7d47b;
+  color: #f29b3f;
 }
 
-.bg-red {
-  background-color: #e37c7c;
+.yellow {
+  color: #f7bd31;
+}
+
+.bg-dark-red {
+  background-color: #b81416;
 }
 
 .bg-orange {
-  background-color: #f7d47b;
+  background-color: #f29b3f;
+}
+
+.bg-red {
+  background-color: #e92f29;
+}
+
+.bg-yellow {
+  background-color: #f7bd31;
 }
 
 #main {

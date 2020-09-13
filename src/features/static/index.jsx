@@ -1,47 +1,67 @@
-import React from 'react';
+import React from 'react'
+import { firestore } from '../../utils/firebase'
+import { Resizable } from 're-resizable'
 
-const bodyA = `Getting anything done with a group of people online usually involves employing a small army of apps to keep track of things.`;
+export const Static = () => {
+  const [tasks, setTasks] = React.useState([
+    {
+      id: 1,
+      color: '#eee',
+      size: 40
+    }
+  ])
 
-const bodyB = `We designed a solution around the idea of the fewest necessary features for effective collaboration. It doesn't have everything but it has more than enough to get you started. Tiny teams is a single page where you can chat, make decisions, and get stuff done.`;
+  React.useEffect(() => {
+    const thisWeekTasks = firestore.collectionGroup('tasks')
+      .where('completed', '==', false)
+      .where('thisWeek', '==', true)
 
-export const Static = () => (
-  <section className="cf ph3 ph5-ns pv5 vh-50">
-    <header className="fn fl-ns w-50-ns pr4-ns">
-      <h1 className="f2 lh-title fw9 mb3 mt0 pt3 bt bw2">Tiny Teams</h1>
-      <h2 className="f3 mid-gray lh-title">
-        A collaborative decision making tool for remote teams.
-      </h2>
-      {/* <Players /> */}
-    </header>
-    <div className="fn fl-ns w-50-ns">
-      <p className="f5 lh-copy measure mt0-ns">{bodyA}</p>
-      <p className="f5 lh-copy measure">{bodyB}</p>
-      <h3 className="mt5">Important Project Links</h3>
-      <ul>
-        <li>
-          <a href="https://github.com/joshpitzalis/tinyteams/issues">
-            Report an Issue
-          </a>
-        </li>
-      </ul>
-    </div>
-  </section>
-);
+    thisWeekTasks.onSnapshot(coll => {
+      const allTasks = coll.docs.map(doc => {
+        return { ...doc.data(), listId: doc.E_.path.segments[6] }
+      })
 
-const Players = () => (
-  <div className="flex">
-    {' '}
-    <img
-      src="http://mrmrs.github.io/photos/p/4.jpg"
-      className="ba b--black-10 db br-100 w2 w3-ns h2 h3-ns"
-    />
-    <img
-      src="http://mrmrs.github.io/photos/p/5.jpg"
-      className="ba b--black-10 db br-100 w2 w3-ns h2 h3-ns"
-    />
-    <img
-      src="http://mrmrs.github.io/photos/p/6.jpg"
-      className="ba b--black-10 db br-100 w2 w3-ns h2 h3-ns"
-    />
-  </div>
-);
+      setTasks([...allTasks, {
+        id: 3333,
+        colour: '#eee',
+        size: allTasks.reduce((accumulator, currentValue) => accumulator - currentValue.size, 40)
+      }])
+    })
+    // return () => unsubscribe()
+  }, [])
+
+  return (
+    <section className='cf ph0 pv5 flex w-100 overflow-hidden'>
+      {tasks && tasks.map(task =>
+
+        <Chunk task={task} key={task.id} />
+      )}
+    </section>
+  )
+}
+
+const Chunk = ({ task }) => {
+  const [size, setSize] = React.useState(null)
+  const minutes = task.size * 60 + size
+  const hours = Math.floor(minutes / 60)
+  return (
+    <Resizable
+      defaultSize={{
+        width: 0,
+        height: 100
+      }}
+      enable={{ top: false, right: true, bottom: false, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
+      onResize={(e, direction, ref, d) => setSize(d.width)}
+      onResizeStop={() => {
+        setSize(null)
+        firestore.doc(`todoLists/${task.listId}/tasks/${task.id}`).update({
+          size: minutes / 60
+        })
+      }}
+
+      style={{ flexGrow: task.size, backgroundColor: task.colour }}
+    >
+      {size && `${task.title} : ${hours} hours ${minutes % 60} minutes`}
+    </Resizable>
+  )
+}

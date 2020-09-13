@@ -1,10 +1,10 @@
-import { Box } from 'grommet';
-import React from 'react';
-import { useFireColl } from '../../hooks/firebase';
-import { ToDoItem } from './ToDoItem';
+import { Box } from 'grommet'
+import React from 'react'
+import { useFireColl } from '../../hooks/firebase'
+import { ToDoItem } from './ToDoItem'
 
 export const ToDoLists = ({ lists, dispatch }) => (
-  <Box direction="row" wrap justify="between">
+  <Box direction='row' wrap justify='between'>
     {lists &&
       lists.map((list, index) => (
         <List
@@ -13,28 +13,37 @@ export const ToDoLists = ({ lists, dispatch }) => (
           dispatch={dispatch}
           id={list.id}
           title={list.title}
-          color={list.colour}
+          color={list.listColour}
         />
       ))}
   </Box>
-);
+)
 
 export const List = ({ dispatch, id, title, index, color }) => {
-  const tasks = useFireColl(`todoLists/${id}/tasks`);
-  const activeTasks = tasks.filter(item => item.completed === false);
-  const archivedTasks = tasks.filter(item => item.completed === true);
-  const [archived, setArchived] = React.useState(true);
-  const [full, setFull] = React.useState(tasks && archivedTasks.length > 5);
+  const tasks = useFireColl(`todoLists/${id}/tasks`)
+  const activeTasks = tasks.filter(item => item.completed === false)
+  const archivedTasks = tasks.filter(item => item.completed === true)
+  const [archived, setArchived] = React.useState(true)
+  const [full, setFull] = React.useState(tasks && archivedTasks.length > 5)
 
   return (
-    <div className="dib ma1 w5" style={{ color }}>
+    <div
+      className='dib ma1 w5 mt4 pointer'
+
+      onClick={() =>
+        dispatch({
+          type: 'OPENED_TASK_LIST_EDITOR',
+          payload: id
+        })}
+    >
       <div>
-        <h1 className="f4 bold  dib" style={{ color }}>
+        <div className='h1 w1 br-100 dib mr3' style={{ backgroundColor: color }} />
+        <h2 className='fw7 mb2 dib'>
           {title}
-        </h1>
+        </h2>
       </div>
       <ul
-        className="list pl0 ml0 center mw5 ba br3"
+        className='list pl0 ml0 center mw5 bn h5 pv3 b--black-05'
         key={id}
         style={{ borderColor: color }}
       >
@@ -64,21 +73,21 @@ export const List = ({ dispatch, id, title, index, color }) => {
           />
         )}
       </ul>
-      <small
+
+      {/* <small
         onClick={() =>
           dispatch({
             type: 'OPENED_TASK_LIST_EDITOR',
-            payload: id,
-          })
-        }
-        data-testid="editTaskList"
-        className="pr3 dib pointer"
+            payload: id
+          })}
+        data-testid='editTaskList'
+        className='pr3 dib pointer'
       >
         Edit
-      </small>
+      </small> */}
     </div>
-  );
-};
+  )
+}
 
 const ShortTaskList = ({
   setArchived,
@@ -89,26 +98,31 @@ const ShortTaskList = ({
   color,
   setFull,
   archivedTasks,
-  archived,
+  archived
 }) => (
-  <span onMouseLeave={() => setArchived(true)}>
-    {tasks &&
-      activeTasks.slice(0, 5).map((task, indexx, array) => {
-        const lastTask = indexx + 1 === array.length;
-        return (
-          <ToDoItem
-            index={index}
-            task={task}
-            lastTask={lastTask}
-            key={task.id}
-            listId={id}
-            color={color}
-          />
-        );
-      })}
+  <span
+    onMouseLeave={() => setArchived(true)}
+    className='flex flex-column justify-between h-100'
+  >
+    <div>
+      {tasks &&
+        activeTasks.slice(0, 5).map((task, indexx, array) => {
+          const lastTask = indexx + 1 === array.length
+          return (
+            <ToDoItem
+              index={index}
+              task={task}
+              lastTask={lastTask}
+              key={task.id}
+              listId={id}
+              color={color}
+            />
+          )
+        })}
+    </div>
     {tasks && activeTasks.length > 5 ? (
-      <div className="tc ">
-        <small className="pointer pv3" onClick={() => setFull(true)}>
+      <div className='tc '>
+        <small className='pointer pv3' onClick={() => setFull(true)}>
           {'Show More Tasks..'}
         </small>
       </div>
@@ -130,7 +144,7 @@ const ShortTaskList = ({
       color={color}
     />
   </span>
-);
+)
 
 const LongTaskList = ({
   setFull,
@@ -141,12 +155,12 @@ const LongTaskList = ({
   color,
   setArchived,
   archived,
-  archivedTasks,
+  archivedTasks
 }) => (
   <span onMouseLeave={() => setFull(false)}>
     {tasks &&
       activeTasks.map((task, indexx, array) => {
-        const lastTask = indexx + 1 === array.length;
+        const lastTask = indexx + 1 === array.length
         return (
           <ToDoItem
             index={index}
@@ -156,7 +170,7 @@ const LongTaskList = ({
             listId={id}
             color={color}
           />
-        );
+        )
       })}
     {tasks && archivedTasks.length > 0 && (
       <ShowArchivedTasks
@@ -174,13 +188,13 @@ const LongTaskList = ({
       color={color}
     />
   </span>
-);
+)
 
 const ArchivedTasks = ({ archived, tasks, archivedTasks, index, id, color }) =>
   !archived &&
   tasks &&
   archivedTasks.map((task, indexx, array) => {
-    const lastTask = indexx + 1 === array.length;
+    const lastTask = indexx + 1 === array.length
     return (
       <ToDoItem
         index={index}
@@ -190,18 +204,18 @@ const ArchivedTasks = ({ archived, tasks, archivedTasks, index, id, color }) =>
         listId={id}
         color={color}
       />
-    );
-  });
+    )
+  })
 
 const ShowArchivedTasks = ({ setArchived, archived }) => (
-  <div className="tc ">
+  <div className='tc '>
     <small
-      className="pointer pv3"
+      className='pointer pv3'
       onClick={() => {
-        archived ? setArchived(false) : setArchived(true);
+        archived ? setArchived(false) : setArchived(true)
       }}
     >
       {archived ? 'Show Archived Tasks' : 'Hide Archived Tasks'}
     </small>
   </div>
-);
+)
